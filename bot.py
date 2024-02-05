@@ -33,6 +33,7 @@ class Bot:
                 "change <name> <old phone> <new phone> - change phone number of contact\n"
                 "phone <name> - show all phones of contact\n"
                 "show all  - show all contacts in the addressbook\n"
+                "search <text> - search and show contacts containing any text"
                 "good by | exit | close - close the bot\n"
                 "hello | help - this message")
 
@@ -75,7 +76,7 @@ class Bot:
             for phone in record.phones:
                 if text in phone.value:
                     result.add(record)
-        return '\n'.join([str(record) for record in result])
+        return '\n'.join([str(record) for record in result]) if result else f'{text} is not found in addressbook'
 
     # if text in record.name.value + ' '.join([p.value for p in record.phones])
 
