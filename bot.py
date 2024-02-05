@@ -29,7 +29,8 @@ class Bot:
                 "Usage: command [*parameters]\n"
                 "Commands:\n"
                 "add <name> <phone> - add new contact and phone number\n"
-                "birthday <name> <birthday> - set up birthday of contact\n"
+                "rename <old_name> <new_name> - rename contact\n"
+                "birthday <name> <birthday> - set up birthday (YYYY-mm-dd) of contact\n"
                 "when <name> - how many days to next birthday of contact\n"
                 "change <name> <old phone> <new phone> - change phone number of contact\n"
                 "phone <name> - show all phones of contact\n"
@@ -58,10 +59,18 @@ class Bot:
         return 'Ok'
 
     @input_error
+    def rename_contact(self, old_name: str, new_name: str):
+        return self.book.rename_contact(old_name, new_name)
+
+    @input_error
     def days_to_birthday(self, name: str):
         record = self.book.find(name)
         if record:
-            return record.days_to_birthday()
+            days = record.days_to_birthday()
+            if days:
+                return days
+            else:
+                return f"Contact {name} has no birthday"
         else:
             raise ValueError(f"Contact {name} not found")
 
@@ -103,6 +112,7 @@ class Bot:
         'hello': hello,
         'help': hello,
         'add': add_phone,
+        'rename': rename_contact,
         'birthday': set_birthday,
         'when': days_to_birthday,
         'change': change_phone,
@@ -125,9 +135,15 @@ class Bot:
         command = command.lower()
         if command in ['hello', 'exit', 'close', 'help']:
             pass
-        elif command in ['add', 'birthday']:
+        elif command == 'add':
             if len(parameter) != 2:
                 raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name> <phone number>"')
+        elif command == 'birthday':
+            if len(parameter) != 2:
+                raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name> <birthday>"')
+        elif command == 'rename':
+            if len(parameter) != 2:
+                raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name> <new name>"')
         elif command == 'change':
             if len(parameter) != 3:
                 raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name>  <old number> <new '

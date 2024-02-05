@@ -125,6 +125,18 @@ class AddressBook(UserDict):
     def delete(self, name_contact):
         if name_contact in self.data:
             del self.data[name_contact]
+        else:
+            raise ValueError(f"Contact name {name_contact} not exist in {self.data}.")
+
+    def rename_contact(self, old_name: str, new_name: str):
+        record = self.find(old_name)
+        if record:
+            record.name.value = new_name
+            self.data[new_name] = record
+            self.delete(old_name)
+        else:
+            raise ValueError(f"Contact name {old_name} not exist in {self.data}.")
+        return 'Ok'
 
     def iterator(self, page_size=10):
         total_records = len(self.data)
