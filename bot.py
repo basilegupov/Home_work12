@@ -20,21 +20,21 @@ class Bot:
             with open(self.file, 'rb') as f:
                 contacts_dict = pickle.load(f)
                 self.book.data = contacts_dict
-        except FileExistsError:
+        except FileNotFoundError:
             print('Created a new Addressbook')
 
     def hello(*args):
         return ("How can I help you?\n"
                 "Usage: command [*parameters]\n"
                 "Commands:\n"
-                "add <name> <phone number> - add new contact\n"
+                "add <name> <phone> - add new contact and phone number\n"
                 "birthday <name> <birthday> - set up birthday of contact\n"
                 "when <name> - how many days to next birthday of contact\n"
                 "change <name> <old phone> <new phone> - change phone number of contact\n"
                 "phone <name> - show all phones of contact\n"
-                "show all  - show all contacts of addressbook\n"
-                "good by | exit | close - close to bot\n"
-                "hello - this message")
+                "show all  - show all contacts in the addressbook\n"
+                "good by | exit | close - close the bot\n"
+                "hello | help - this message")
 
     @input_error
     def add_phone(self, name: str, number: str):

@@ -5,7 +5,6 @@ from datetime import datetime  # timedelta
 class Field:
     def __init__(self, value=None):
         if not self.is_valid(value):
-            print('????')
             raise ValueError
         self.value = value
 
@@ -108,13 +107,11 @@ class Record:
         return (next_birthday - today).days
 
     def __str__(self):
-        # return (f"Contact name: {str(self.name.value)}, "
-        #         f"phones: {'; '.join(str(p.value) for p in self.phones)}")
         if self.birthday:
             return (f"Contact name: {str(self.name.value)}, birthday: {str(self.birthday.value)},"
                     f" phones: {'; '.join(str(p.value) for p in self.phones)}")
         else:
-            return (f"Contact name: {str(self.name.value)}, "
+            return (f"Contact name: {str(self.name.value)},"
                     f" phones: {'; '.join(str(p.value) for p in self.phones)}")
 
 
