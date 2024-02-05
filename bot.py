@@ -23,6 +23,7 @@ class Bot:
         except FileNotFoundError:
             print('Created a new Addressbook')
 
+    @input_error
     def hello(*args):
         return ("How can I help you?\n"
                 "Usage: command [*parameters]\n"
@@ -48,7 +49,7 @@ class Bot:
         return 'Ok'
 
     @input_error
-    def set_birthday(self, name, birthday):
+    def set_birthday(self, name: str, birthday: str):
         record = self.book.find(name)
         if record:
             record.set_birthday(birthday)
@@ -57,9 +58,12 @@ class Bot:
         return 'Ok'
 
     @input_error
-    def days_to_birthday(self, name):
+    def days_to_birthday(self, name: str):
         record = self.book.find(name)
-        return record.days_to_birthday()
+        if record:
+            return record.days_to_birthday()
+        else:
+            raise ValueError(f"Contact {name} not found")
 
     @input_error
     def change_phone(self, name: str, old_number: str, new_number: str):
@@ -68,7 +72,8 @@ class Bot:
         record = self.book.find(name)
         record.edit_phone(old_number, new_number)
 
-    def search(self, text):
+    @input_error
+    def search(self, text: str):
         result = set()
         for record in self.book.data.values():
             if text in record.name.value:
@@ -88,6 +93,7 @@ class Bot:
     def show_all(self, *args):
         return self.book
 
+    @input_error
     def bye(self, *args):
         with open(self.file, 'wb') as f:
             pickle.dump(self.book.data, f)
@@ -124,10 +130,14 @@ class Bot:
                 raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name> <phone number>"')
         elif command == 'change':
             if len(parameter) != 3:
-                raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name> <phone number>"')
-        elif command in ['phone', 'search', 'when']:
+                raise ValueError(f'Invalid parameters. Try again. Use "{command} <contact name>  <old number> <new '
+                                 f'number>"')
+        elif command in ['phone', 'when']:
             if not parameter:
                 raise ValueError(f'Invalid parameter. Try again. Use "{command} <contact name>"')
+        elif command == 'search':
+            if not parameter:
+                raise ValueError(f'Invalid parameter. Try again. Use "{command} <searching text>"')
         elif command == 'show':
             if not parameter or not parameter[0] == 'all':
                 raise ValueError('Invalid command. Try again. Use "show all"')
